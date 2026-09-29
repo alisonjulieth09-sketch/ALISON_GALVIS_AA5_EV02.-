@@ -1,0 +1,702 @@
+{
+  "info": {
+    "name": "AYB Auth API - Testing (GA7-220501096-AA5-EV02)",
+    "description": "Pruebas funcionales del servicio web de registro e inicio de sesión. Ejecutar en orden: TC02, TC07, TC08 y TC10 usan el usuario creado en TC01.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "TC01 - Registrar usuario (datos válidos)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const sufijo = Date.now().toString().slice(-6);",
+              "pm.collectionVariables.set('usuarioPrueba', 'alison_' + sufijo);",
+              "pm.collectionVariables.set('passwordPrueba', 'Clave123');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 201', () => pm.response.to.have.status(201));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+              "pm.test('success = true', () => pm.expect(pm.response.json().success).to.eql(true));",
+              "pm.test('Mensaje: Registro realizado correctamente', () => pm.expect(pm.response.json().message).to.eql('Registro realizado correctamente'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/registro",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "registro"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"{{usuarioPrueba}}\",\n  \"password\": \"{{passwordPrueba}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC02 - Registrar usuario duplicado",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 409', () => pm.response.to.have.status(409));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+              "pm.test('success = false', () => pm.expect(pm.response.json().success).to.eql(false));",
+              "pm.test('Mensaje: El usuario ya está registrado', () => pm.expect(pm.response.json().message).to.eql('El usuario ya está registrado'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/registro",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "registro"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"{{usuarioPrueba}}\",\n  \"password\": \"{{passwordPrueba}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC03 - Registrar con usuario vacío",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 400', () => pm.response.to.have.status(400));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/registro",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "registro"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"\",\n  \"password\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC04 - Registrar con contraseña vacía",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 400', () => pm.response.to.have.status(400));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/registro",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "registro"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"prueba_vacia\",\n  \"password\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC05 - Registrar con contraseña de 3 caracteres",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 400', () => pm.response.to.have.status(400));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/registro",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "registro"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"prueba_corta\",\n  \"password\": \"123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC06 - Registrar con usuario de más de 80 caracteres",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 400', () => pm.response.to.have.status(400));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/registro",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "registro"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\n  \"password\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC07 - Iniciar sesión (datos correctos)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 200', () => pm.response.to.have.status(200));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+              "pm.test('success = true', () => pm.expect(pm.response.json().success).to.eql(true));",
+              "pm.test('Mensaje: Autenticación satisfactoria', () => pm.expect(pm.response.json().message).to.eql('Autenticación satisfactoria'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"{{usuarioPrueba}}\",\n  \"password\": \"{{passwordPrueba}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC08 - Iniciar sesión (contraseña incorrecta)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 401', () => pm.response.to.have.status(401));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+              "pm.test('success = false', () => pm.expect(pm.response.json().success).to.eql(false));",
+              "pm.test('Mensaje: Error en la autenticación', () => pm.expect(pm.response.json().message).to.eql('Error en la autenticación'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"{{usuarioPrueba}}\",\n  \"password\": \"999999\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC09 - Iniciar sesión (usuario inexistente)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 401', () => pm.response.to.have.status(401));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+              "pm.test('success = false', () => pm.expect(pm.response.json().success).to.eql(false));",
+              "pm.test('Mensaje: Error en la autenticación', () => pm.expect(pm.response.json().message).to.eql('Error en la autenticación'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"usuario_que_no_existe\",\n  \"password\": \"123456\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC10 - Contraseña con mayúsculas distintas",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 401', () => pm.response.to.have.status(401));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));",
+              "pm.test('success = false', () => pm.expect(pm.response.json().success).to.eql(false));",
+              "pm.test('Mensaje: Error en la autenticación', () => pm.expect(pm.response.json().message).to.eql('Error en la autenticación'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"{{usuarioPrueba}}\",\n  \"password\": \"clave123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC11 - Iniciar sesión con campos vacíos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 400', () => pm.response.to.have.status(400));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"\",\n  \"password\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC12 - Enviar JSON mal formado",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 400', () => pm.response.to.have.status(400));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"usuario\": \"alison\",\n  \"password\": \n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "TC13 - Método no permitido (GET en login)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 405', () => pm.response.to.have.status(405));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      }
+    },
+    {
+      "name": "TC14 - Ruta inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Código de estado 404', () => pm.response.to.have.status(404));",
+              "pm.test('La respuesta es JSON', () => pm.response.to.be.json);",
+              "pm.test('Tiempo de respuesta menor a 2000 ms', () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/perfil",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "perfil"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "usuarioPrueba",
+      "value": ""
+    },
+    {
+      "key": "passwordPrueba",
+      "value": "Clave123"
+    }
+  ]
+}
